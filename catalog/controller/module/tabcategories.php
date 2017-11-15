@@ -11,9 +11,25 @@ class ControllerModuleTabCategories extends Controller {
             $id = $this->config->get('tabcategories_text_field');
         }
         
+        $this->load->language('product/category');
         $this->load->model('catalog/category');
+        $this->load->model('catalog/product');
         $this->load->model('tool/image');
-        $data['categories'] = $this->model_catalog_category->getCategories($id);
+
+        $data['categories'] = array();
+        $results = $this->model_catalog_category->getCategories($id);
+        foreach ($results as $result) {
+            $filter_data = array(
+                'filter_category_id'  => $result['category_id'],
+                'filter_sub_category' => true
+            );
+
+            $data['categories'][] = array(
+                'name'  => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
+                'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url)
+            );
+        }
+
         
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/tabcategories.tpl')) {
             return $this->load->view($this->config->get('config_template') . '/template/module/tabcategories.tpl', $data);
