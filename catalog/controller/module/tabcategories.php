@@ -37,9 +37,9 @@ class ControllerModuleTabCategories extends Controller {
         $results = $this->model_catalog_category->getCategories($id);
         foreach ($results as $key => $result) {
             if ($result['image']) {
-                $results[$key]['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('config_image_category_width'), $this->config->get('config_image_category_height'));
+                $result['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('config_image_category_width'), $this->config->get('config_image_category_height'));
             } else {
-                $results[$key]['thumb'] = '';
+                $result['thumb'] = '';
             }
 
             $filter_data = array(
@@ -49,7 +49,8 @@ class ControllerModuleTabCategories extends Controller {
 
             $data['categories'][] = array(
                 'name'  => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-                'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url)
+                'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url),
+                'thumb' => $result['thumb']
             );
         }
 
