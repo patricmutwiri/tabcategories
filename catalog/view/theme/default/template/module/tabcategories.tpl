@@ -9,7 +9,9 @@
 		<?php foreach ($categories as $key => $category) { ?>
 		  <div id="<?php echo $category['category_id']; ?>" class="tab-pane fade in">
 		    <h3><?php echo $category['category_name']; ?></h3>
-		    <a href="<?php echo $category['href'] ?>"><img src="" class="img-responsive" /></a>
+		    <a href="<?php echo $this->url->link('product/category', 'path='.$category['category_id'].''); ?>">
+		    	<img src="<?php echo $category['thumb']; ?>" class="img-responsive" />
+		    </a>
 		  </div>
 		<?php } ?>
 	</div>
