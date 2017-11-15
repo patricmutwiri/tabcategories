@@ -10,15 +10,38 @@ class ControllerModuleTabCategories extends Controller {
         if(!empty($this->config->get('tabcategories_text_field'))) {
             $id = $this->config->get('tabcategories_text_field');
         }
-        
+
         $this->load->language('product/category');
         $this->load->model('catalog/category');
         $this->load->model('catalog/product');
         $this->load->model('tool/image');
+        
+        $url = '';
+        if (isset($this->request->get['filter'])) {
+            $url .= '&filter=' . $this->request->get['filter'];
+        }
+
+        if (isset($this->request->get['sort'])) {
+            $url .= '&sort=' . $this->request->get['sort'];
+        }
+
+        if (isset($this->request->get['order'])) {
+            $url .= '&order=' . $this->request->get['order'];
+        }
+
+        if (isset($this->request->get['limit'])) {
+            $url .= '&limit=' . $this->request->get['limit'];
+        }
 
         $data['categories'] = array();
         $results = $this->model_catalog_category->getCategories($id);
-        foreach ($results as $result) {
+        foreach ($results as $key => $result) {
+            if ($result['image']) {
+                $results[$key]['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('config_image_category_width'), $this->config->get('config_image_category_height'));
+            } else {
+                $results[$key]['thumb'] = '';
+            }
+
             $filter_data = array(
                 'filter_category_id'  => $result['category_id'],
                 'filter_sub_category' => true
