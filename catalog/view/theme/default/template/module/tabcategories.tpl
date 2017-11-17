@@ -14,7 +14,7 @@
 				<?php foreach ($category['products'] as $key => $product) { ?>
 					<div class="product-layout product-list col-xs-6 col-sm-6 col-md-3">
 						<div class="product-thumb">
-					    <div class="image"><a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-responsive" /></a></div>
+					    <div class="image tabCatImage"><a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-responsive" /></a></div>
 					      	<div class="caption">
 						        <h4 class="text-center"><a class="text-center" href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></h4>
 						        <?php if ($product['rating']) { ?>
@@ -29,7 +29,7 @@
 							        </div>
 						        <?php } ?>
 						        <?php if ($product['price']) { ?>
-							        <p class="price text-center">
+							        <p class="text-center">
 										<?php if (!$product['special']) { ?>
 											<?php echo $product['price']; ?>
 										<?php } else { ?>
@@ -53,3 +53,9 @@
 		<?php } ?>
 	</div>
 <?php } ?>
+<style type="text/css">
+	.tabCatImage img{
+		max-height: 200px;
+		width: auto;
+	}
+</style>
