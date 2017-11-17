@@ -65,11 +65,13 @@ class ControllerModuleTabCategories extends Controller {
 
         $data['categories'] = array();
         $results = $this->model_catalog_category->getCategories($id);
+        shuffle($results);
         foreach ($results as $key => $result) {
             //products
             $data['products'] = array();
             $filter_data = array(
                 'filter_category_id' => $result['category_id'],
+                'filter_sub_category' => true,
                 'filter_filter'      => $filter,
                 'sort'               => $sort,
                 'order'              => $order,
@@ -79,39 +81,39 @@ class ControllerModuleTabCategories extends Controller {
 
             $product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
-            $results = $this->model_catalog_product->getProducts($filter_data);
+            $p_results = $this->model_catalog_product->getProducts($filter_data);
 
-            foreach ($results as $result) {
-                if ($result['image']) {
-                    $image = $this->model_tool_image->resize($result['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
+            foreach ($p_results as $p_result) {
+                if ($p_result['image']) {
+                    $image = $this->model_tool_image->resize($p_result['image'], $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
                 } else {
                     $image = $this->model_tool_image->resize('placeholder.png', $this->config->get('config_image_product_width'), $this->config->get('config_image_product_height'));
                 }
 
                 if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
-                    $price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')));
+                    $price = $this->currency->format($this->tax->calculate($p_result['price'], $p_result['tax_class_id'], $this->config->get('config_tax')));
                 } else {
                     $price = false;
                 }
 
-                if ((float)$result['special']) {
-                    $special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')));
+                if ((float)$p_result['special']) {
+                    $special = $this->currency->format($this->tax->calculate($p_result['special'], $p_result['tax_class_id'], $this->config->get('config_tax')));
                 } else {
                     $special = false;
                 }
 
                 if ($this->config->get('config_tax')) {
-                    $tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price']);
+                    $tax = $this->currency->format((float)$p_result['special'] ? $p_result['special'] : $p_result['price']);
                 } else {
                     $tax = false;
                 }
 
                 if ($this->config->get('config_review_status')) {
-                    $rating = (int)$result['rating'];
+                    $rating = (int)$p_result['rating'];
                 } else {
                     $rating = false;
                 }
-                $discounts = $this->model_catalog_product->getProductDiscounts($result['product_id']);
+                $discounts = $this->model_catalog_product->getProductDiscounts($p_result['product_id']);
                 $product_discounts = array(); 
                 foreach ($discounts as $discount) {
                     $product_discounts[] = array(
@@ -120,18 +122,18 @@ class ControllerModuleTabCategories extends Controller {
                     );
                 }
                 $data['products'][] = array(
-                    'product_id'    => $result['product_id'],
+                    'product_id'    => $p_result['product_id'],
                     'thumb'         => $image,
-                    'name'          => $result['name'],
-                    'startdate'     => $result['date_added'],
-                    'description'   => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, 270, $this->config->get('config_product_description_length')) . '..',
+                    'name'          => $p_result['name'],
+                    'startdate'     => $p_result['date_added'],
+                    'description'   => utf8_substr(strip_tags(html_entity_decode($p_result['description'], ENT_QUOTES, 'UTF-8')), 0, 270, $this->config->get('config_product_description_length')) . '..',
                     'price'         => $price,
                     'discounts'     => $product_discounts,
                     'special'     => $special,
                     'tax'         => $tax,
-                    'rating'      => $result['rating'],
-                    'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $result['product_id'] . $url),
-                    'href_qv'     => $this->url->link('product/quickview', 'product_id=' . $result['product_id'])
+                    'rating'      => $p_result['rating'],
+                    'href'        => $this->url->link('product/product', 'path=' . $this->request->get['path'] . '&product_id=' . $p_result['product_id'] . $url),
+                    'href_qv'     => $this->url->link('product/quickview', 'product_id=' . $p_result['product_id'])
                 );
             }
 
@@ -148,11 +150,11 @@ class ControllerModuleTabCategories extends Controller {
             );
 
             $data['categories'][] = array(
-                'name'  => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-                'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url),
-                'thumb' => $result['thumb'],
-                'category_id' => $result['category_id'],
-                'products' => $products;
+                'name'      => $result['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
+                'href'      => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id'] . $url),
+                'thumb'     => $result['thumb'],
+                'category_id'   => $result['category_id'],
+                'products'      => $data['products']
             );
         }
 
