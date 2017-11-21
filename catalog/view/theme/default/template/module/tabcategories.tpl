@@ -1,14 +1,16 @@
 <?php if(!empty($categories)) { ?>
-	<ul class="tabcategories nav nav-tabs" role="tablist">
+	<ul class="visible-xs tabcategories nav nav-tabs" role="tablist">
 		<?php foreach ($categories as $key => $category) { ?>
+		<?php if ($key < 4) { ?>
 	  		<li class="tabcategory-li nav-item<?php if($key == 0) { echo ' active'; } ?>">
 	  			<a data-toggle="tab" role="tab" class="nav-link<?php if($key == 0) { echo ' active'; } ?>" href="#c<?php echo $category['category_id']; ?>">
-	  				<?php echo $category['name']; ?>
+	  				<?php echo ucwords(strtolower($category['name'])); ?>
 	  			</a>
 	  		</li>
 	  	<?php } ?>
+	  	<?php } ?>
 	</ul>
-	<div class="tab-content col-xs-12 noPaddin">
+	<div class="visible-xs tab-content col-xs-12 noPaddin">
 		<?php foreach ($categories as $key => $category) { ?>
 			<div role="tabpanel" id="c<?php echo $category['category_id']; ?>" class="col-xs-12 noPaddin tab-pane fade in <?php if($key == 0) { echo ' active'; } ?>">
 				<?php foreach ($category['products'] as $key => $product) { ?>
@@ -19,17 +21,6 @@
 					    </div>
 					      	<div class="caption col-xs-12">
 						        <h4 class="text-center"><a class="text-center" href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></h4>
-						        <?php if ($product['rating']) { ?>
-							        <div class="rating text-center">
-										<?php for ($i = 1; $i <= 5; $i++) { ?>
-											<?php if ($product['rating'] < $i) { ?>
-												<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
-											<?php } else { ?>
-												<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
-											<?php } ?>
-										<?php } ?>
-							        </div>
-						        <?php } ?>
 						        <?php if ($product['price']) { ?>
 							        <p class="text-center">
 										<?php if (!$product['special']) { ?>
@@ -59,5 +50,40 @@
 	.tabCatImage img{
 		max-height: 200px;
 		width: auto;
+	}
+    .tabcategories.nav-tabs li a {
+    	border-radius: 0;
+    	border-color: #ddd;
+    }
+    .tabcategory-li.active a.active {
+        border-color: black;
+    }
+    .tabcategories > li.active > a, 
+    .tabcategories > li.active > a:hover, 
+    .tabcategories > li.active > a:focus{
+    	border: 1px solid #000;
+    }
+    .tabcategories.nav-tabs {
+    	border-bottom: 1px solid #000;
+    	width: 768px;
+		overflow: hidden;
+	}
+	.tabcategories.nav-tabs li{
+		margin-bottom: 0px;
+	}
+	.tabProductX.product-list .product-thumb h4 a, .product-content h1{
+		font-size: 100% !important;
+		padding-top: 15px;
+	}
+	.tabProductX .caption{
+		height: 100px;
+	}
+	@media(max-width: 768px){
+		div.tabProductX .product-thumb .caption {
+			height: 100px;
+		}
+		div.tabProductX .button-group.col-xs-12 {
+			padding: 0px;
+		}
 	}
 </style>
