@@ -1,7 +1,7 @@
 <?php if(!empty($categories)) { ?>
-	<ul class="nav nav-tabs" role="tablist">
+	<ul class="tabcategories nav nav-tabs" role="tablist">
 		<?php foreach ($categories as $key => $category) { ?>
-	  		<li class="nav-item<?php if($key == 0) { echo ' active'; } ?>">
+	  		<li class="tabcategory-li nav-item<?php if($key == 0) { echo ' active'; } ?>">
 	  			<a data-toggle="tab" role="tab" class="nav-link<?php if($key == 0) { echo ' active'; } ?>" href="#c<?php echo $category['category_id']; ?>">
 	  				<?php echo $category['name']; ?>
 	  			</a>
@@ -12,10 +12,12 @@
 		<?php foreach ($categories as $key => $category) { ?>
 			<div role="tabpanel" id="c<?php echo $category['category_id']; ?>" class="col-xs-12 noPaddin tab-pane fade in <?php if($key == 0) { echo ' active'; } ?>">
 				<?php foreach ($category['products'] as $key => $product) { ?>
-					<div class="product-layout product-list col-xs-6 col-sm-6 col-md-3">
+					<div class="tabProductX product-layout product-list col-xs-6 col-sm-6 col-md-3">
 						<div class="product-thumb">
-					    <div class="image tabCatImage"><a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-responsive" /></a></div>
-					      	<div class="caption">
+					    <div class="image tabCatImage col-xs-12">
+					    	<a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-responsive" /></a>
+					    </div>
+					      	<div class="caption col-xs-12">
 						        <h4 class="text-center"><a class="text-center" href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></h4>
 						        <?php if ($product['rating']) { ?>
 							        <div class="rating text-center">
