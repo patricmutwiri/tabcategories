@@ -78,6 +78,9 @@
 	.tabProductX .caption{
 		height: 100px;
 	}
+	.tabCatImage {
+		padding: 0px
+	}
 	@media(max-width: 768px){
 		div.tabProductX .product-thumb .caption {
 			height: 100px;
